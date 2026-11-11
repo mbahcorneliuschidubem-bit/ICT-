@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Corvexa Chemistry CBT Hub</title>
+<link rel="icon" type="image/png" href="logo.png">
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+--bg:#050914;
+--panel:#0c1424;
+--panel2:#111c31;
+--cyan:#35e8ff;
+--gold:#e8c86b;
+--green:#22d49a;
+--red:#ff5577;
+--text:#f4f7ff;
+--muted:#9aa8bd;
+--border:rgba(255,255,255,.09);
+}
+
+body{
+font-family:Arial,Helvetica,sans-serif;
+background:
+radial-gradient(circle at 15% 10%,rgba(53,232,255,.12),transparent 28%),
+radial-gradient(circle at 85% 85%,rgba(232,200,107,.09),transparent 30%),
+var(--bg);
+color:var(--text);
+min-height:100vh;
+}
+
+header{
+position:sticky;
+top:0;
+z-index:20;
+padding:15px 5%;
+background:rgba(5,9,20,.94);
+backdrop-filter:blur(15px);
+border-bottom:1px solid var(--border);
+}
+
+.nav{
+max-width:1250px;
+margin:auto;
+display:flex;
+align-items:center;
+justify-content:space-between;
+}
+
+.brand{display:flex;align-items:center;gap:12px}
+
+.brand img{
+width:50px;
+height:50px;
+object-fit:contain;
+border-radius:12px;
+cursor:pointer;
+touch-action:none;
+user-select:none;
+-webkit-user-drag:none;
+}
+
+.brand h1{font-size:19px}
+.brand span{color:var(--cyan)}
+.brand small{color:var(--muted)}
+
+.hero,.controls,.exam{
+max-width:1250px;
+margin:25px auto;
+padding:0 20px;
+}
+
+.hero{margin-top:45px}
+
+.hero-card{
+padding:42px;
+border-radius:28px;
+border:1px solid var(--border);
+background:linear-gradient(135deg,rgba(53,232,255,.09),rgba(232,200,107,.04)),var(--panel);
+box-shadow:0 25px 80px rgba(0,0,0,.3);
+}
+
+.badge{
+display:inline-block;
+padding:8px 14px;
+border-radius:30px;
+color:var(--cyan);
+background:rgba(53,232,255,.08);
+border:1px solid rgba(53,232,255,.25);
+font-size:12px;
+font-weight:bold;
+letter-spacing:1px;
+}
+
+.hero h2{
+font-size:clamp(34px,6vw,64px);
+line-height:1;
+margin:20px 0;
+}
+
+.hero h2 span{color:var(--gold)}
+.hero p{max-width:800px;color:var(--muted);line-height:1.8}
+
+.control-card,.stat,.question-card,.navigator,.result{
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:22px;
+}
+
+.control-card{padding:25px}
+
+label{display:block;margin-bottom:9px;color:var(--muted)}
+
+select,input{
+width:100%;
+padding:15px;
+border-radius:12px;
+border:1px solid var(--border);
+background:var(--panel2);
+color:white;
+outline:none;
+}
+
+button{
+border:0;
+cursor:pointer;
+border-radius:12px;
+padding:13px 18px;
+font-weight:bold;
+transition:.2s;
+}
+
+button:hover{transform:translateY(-2px)}
+.primary{background:linear-gradient(135deg,var(--cyan),#138ca4);color:#001018}
+.secondary{background:var(--panel2);color:white;border:1px solid var(--border)}
+.danger{background:var(--red);color:white}
+
+.exam{display:none;padding-bottom:50px}
+
+.exam-top{
+display:grid;
+grid-template-columns:1fr 180px;
+gap:15px;
+margin-bottom:20px;
+}
+
+.stat{padding:20px}
+.stat small{color:var(--muted)}
+.stat strong{display:block;font-size:26px;margin-top:5px}
+.timer{color:var(--gold)}
+
+.exam-grid{
+display:grid;
+grid-template-columns:1fr 290px;
+gap:20px;
+}
+
+.question-card{padding:30px}
+.question-number{color:var(--cyan);font-weight:bold}
+.question{font-size:21px;line-height:1.7;margin:20px 0 25px}
+
+.option{
+padding:17px;
+margin:11px 0;
+background:var(--panel2);
+border:1px solid var(--border);
+border-radius:14px;
+cursor:pointer;
+transition:.2s;
+}
+
+.option:hover{border-color:var(--cyan)}
+.option.selected{border-color:var(--cyan);background:rgba(53,232,255,.1)}
+
+.navigation{
+display:flex;
+justify-content:space-between;
+gap:10px;
+margin-top:25px;
+}
+
+.navigator{padding:20px;height:max-content}
+.navigator h3{margin-bottom:15px}
+
+.question-buttons{
+display:grid;
+grid-template-columns:repeat(5,1fr);
+gap:7px;
+}
+
+.qbtn{
+padding:10px 5px;
+font-size:12px;
+background:var(--panel2);
+color:white;
+border:1px solid var(--border);
+}
+
+.qbtn.active{border-color:var(--cyan);color:var(--cyan)}
+.qbtn.answered{background:rgba(34,212,154,.15);border-color:var(--green)}
+
+.result{
+display:none;
+max-width:900px;
+margin:40px auto;
+padding:30px;
+text-align:center;
+}
+
+.score{font-size:65px;color:var(--gold);margin:20px}
+.review{text-align:left;margin-top:30px}
+.review-item{padding:18px;margin:10px 0;border-radius:14px;background:var(--panel2)}
+.correct{color:var(--green)}
+.wrong{color:var(--red)}
+
+footer{text-align:center;color:var(--muted);padding:40px 20px}
+
+/* ADMIN PORTAL */
+
+.admin-modal{
+display:none;
+position:fixed;
+inset:0;
+z-index:1000;
+background:rgba(0,0,0,.88);
+backdrop-filter:blur(12px);
+align-items:center;
+justify-content:center;
+padding:20px;
+}
+
+.admin-box{
+width:100%;
+max-width:460px;
+padding:30px;
+border-radius:22px;
+background:var(--panel);
+border:1px solid rgba(53,232,255,.3);
+box-shadow:0 20px 80px rgba(0,0,0,.6);
+}
+
+.admin-box h2{
+color:var(--cyan);
+margin-bottom:12px;
+}
+
+.admin-box p{
+color:var(--muted);
+line-height:1.6;
+margin-bottom:20px;
+}
+
+.admin-box input{margin-bottom:15px}
+
+.admin-actions{
+display:flex;
+gap:10px;
+}
+
+.admin-actions button{flex:1}
+
+.admin-dashboard{
+display:none;
+position:fixed;
+inset:0;
+z-index:1100;
+overflow-y:auto;
+background:#050914;
+padding:25px;
+}
+
+.admin-header{
+max-width:1100px;
+margin:auto;
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:15px;
+flex-wrap:wrap;
+padding:20px 0;
+border-bottom:1px solid var(--border);
+}
+
+.admin-header h2{color:var(--cyan)}
+
+.admin-content{
+max-width:1100px;
+margin:30px auto;
+}
+
+.admin-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:18px;
+margin:25px 0;
+}
+
+.admin-card{
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:18px;
+padding:25px;
+}
+
+.admin-card small{color:var(--muted)}
+.admin-card strong{
+display:block;
+font-size:32px;
+color:var(--gold);
+margin-top:12px;
+}
+
+.admin-section{
+background:var(--panel);
+border:1px solid var(--border);
+border-radius:18px;
+padding:25px;
+margin-top:20px;
+}
+
+.admin-section h3{margin-bottom:15px;color:var(--cyan)}
+
+.admin-section p{
+color:var(--muted);
+line-height:1.8;
+}
+
+.admin-progress{
+height:9px;
+background:var(--panel2);
+border-radius:20px;
+overflow:hidden;
+margin-top:12px;
+}
+
+.admin-progress div{
+height:100%;
+width:100%;
+background:var(--green);
+}
+
+.admin-table{
+width:100%;
+border-collapse:collapse;
+margin-top:15px;
+}
+
+.admin-table th,.admin-table td{
+padding:12px;
+text-align:left;
+border-bottom:1px solid var(--border);
+}
+
+.admin-table th{color:var(--cyan)}
+.admin-table td{color:var(--muted)}
+
+.hold-message{
+position:fixed;
+bottom:15px;
+left:50%;
+transform:translateX(-50%);
+background:var(--panel);
+border:1px solid var(--border);
+padding:10px 16px;
+border-radius:12px;
+font-size:12px;
+color:var(--muted);
+z-index:30;
+pointer-events:none;
+}
+
+@media(max-width:850px){
+.exam-grid{grid-template-columns:1fr}
+.exam-top{grid-template-columns:1fr 140px}
+.hero-card{padding:27px}
+.question{font-size:18px}
+}
+
+@media(max-width:500px){
+.admin-dashboard{padding:15px}
+.admin-table th,.admin-table td{padding:8px;font-size:12px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="nav">
+<div class="brand">
+<img src="logo.png" id="adminLogo" alt="Corvexa Logo" draggable="false">
+<div>
+<h1>Corvexa <span>Science CBT</span></h1>
+<small>Chemistry • Corvexa Technologies</small>
+</div>
+</div>
+</div>
+</header>
+
+<div class="hold-message" id="holdMessage">
+
+</div>
+
+<section class="hero">
+<div class="hero-card">
+<span class="badge">CHEMISTRY CBT • 2000–2026</span>
+<h2>Master <span>Chemistry</span><br>Year by Year.</h2>
+<p>
+Welcome to the Corvexa Chemistry CBT Hub.
+Select any year from 2000 to 2026 and practise
+40 JAMB-style Chemistry questions.
+</p>
+</div>
+</section>
+
+<section class="controls" id="setup">
+<div class="control-card">
+<label for="year">Select Examination Year</label>
+<select id="year">
+<option value="">Choose a year</option>
+</select>
+<br><br>
+<button class="primary" onclick="startExam()">Start Chemistry CBT</button>
+</div>
+</section>
+
+<section class="exam" id="exam">
+<div class="exam-top">
+<div class="stat">
+<small>Progress</small>
+<strong id="progress">1 / 40</strong>
+</div>
+<div class="stat">
+<small>Time</small>
+<strong class="timer" id="timer">40:00</strong>
+</div>
+</div>
+
+<div class="exam-grid">
+<div class="question-card">
+<div class="question-number" id="questionNumber">QUESTION 1</div>
+<div class="question" id="questionText"></div>
+<div id="options"></div>
+<div class="navigation">
+<button class="secondary" onclick="previousQuestion()">← Previous</button>
+<button class="primary" onclick="nextQuestion()">Next →</button>
+</div>
+<br>
+<button class="danger" style="width:100%" onclick="submitExam()">Submit Examination</button>
+</div>
+
+<aside class="navigator">
+<h3>Question Navigator</h3>
+<div class="question-buttons" id="questionButtons"></div>
+</aside>
+</div>
+</section>
+
+<section class="result" id="result">
+<span class="badge">EXAMINATION COMPLETE</span>
+<h2 id="resultTitle"></h2>
+<div class="score" id="score"></div>
+<p id="resultMessage"></p>
+<div class="review" id="review"></div>
+<br>
+<button class="primary" onclick="location.reload()">Take Another Exam</button>
+</section>
+
+<footer>
+© 2026 Corvexa Technologies • Corvexa Science CBT Hub
+</footer>
+
+<!-- ADMIN LOGIN MODAL -->
+<div class="admin-modal" id="adminModal">
+<div class="admin-box">
+<h2>Corvexa Admin Access</h2>
+<p>Administrator authentication is required to access the management dashboard.</p>
+<label for="adminPassword">Admin Password</label>
+<input type="password" id="adminPassword" placeholder="Enter administrator password">
+<p id="adminError" style="color:var(--red);display:none"></p>
+<div class="admin-actions">
+<button class="primary" onclick="adminLogin()">Login</button>
+<button class="secondary" onclick="closeAdmin()">Cancel</button>
+</div>
+</div>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<div class="admin-dashboard" id="adminDashboard">
+<div class="admin-header">
+<div>
+<h2>CORVEXA ADMINISTRATION</h2>
+<p style="color:var(--muted);margin-top:6px">Chemistry CBT Management Dashboard</p>
+</div>
+<button class="danger" onclick="closeDashboard()">Logout</button>
+</div>
+
+<div class="admin-content">
+<span class="badge">ADMIN CONTROL PANEL</span>
+<h1 style="margin-top:20px">Platform Overview</h1>
+
+<div class="admin-grid">
+<div class="admin-card">
+<small>Examination Years</small>
+<strong id="adminYears">27</strong>
+</div>
+<div class="admin-card">
+<small>Available Questions</small>
+<strong id="adminQuestions">1,080</strong>
+</div>
+<div class="admin-card">
+<small>Examination Attempts</small>
+<strong id="adminAttempts">0</strong>
+</div>
+<div class="admin-card">
+<small>Average Score</small>
+<strong id="adminAverage">0%</strong>
+</div>
+</div>
+
+<div class="admin-section">
+<h3>Platform Status</h3>
+<p>Corvexa Chemistry CBT Hub is running.</p>
+<div class="admin-progress"><div></div></div>
+<p style="margin-top:12px">System status: <span style="color:var(--green)">ONLINE</span></p>
+</div>
+
+<div class="admin-section">
+<h3>Question Bank Overview</h3>
+<p>Years available: 2000–2026</p>
+<p>Questions per year: 40</p>
+<p>Total generated questions: 1,080</p>
+<p>Subject: Chemistry</p>
+</div>
+
+<div class="admin-section">
+<h3>Recent Examination Results</h3>
+<div style="overflow-x:auto">
+<table class="admin-table">
+<thead>
+<tr>
+<th>Year</th>
+<th>Score</th>
+<th>Percentage</th>
+<th>Date</th>
+</tr>
+</thead>
+<tbody id="adminResults">
+<tr><td colspan="4">No examination results recorded yet.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="admin-section">
+<h3>Administrator Information</h3>
+<p>Portal: Corvexa Chemistry CBT Administration</p>
+<p>Access method: Hold the Corvexa logo for 15 seconds.</p>
+<p>Question bank: 2000–2026.</p>
+<p>Note: This dashboard is a front-end demonstration. It does not provide secure server-side authentication or cloud storage.</p>
+</div>
+
+</div>
+</div>
+
+<script>
+
+/* ADMIN CONFIGURATION */
+
+const ADMIN_PASSWORD = "Corvexa@2026";
+
+const adminLogo = document.getElementById("adminLogo");
+const adminModal = document.getElementById("adminModal");
+const adminDashboard = document.getElementById("adminDashboard");
+
+let holdTimer = null;
+let holdTriggered = false;
+
+function beginLogoHold(){
+    holdTriggered = false;
+    clearTimeout(holdTimer);
+
+    holdTimer = setTimeout(()=>{
+        holdTriggered = true;
+        adminModal.style.display = "flex";
+        document.getElementById("adminPassword").focus();
+    },15000);
+}
+
+function cancelLogoHold(){
+    clearTimeout(holdTimer);
+}
+
+adminLogo.addEventListener("pointerdown",beginLogoHold);
+adminLogo.addEventListener("pointerup",cancelLogoHold);
+adminLogo.addEventListener("pointerleave",cancelLogoHold);
+adminLogo.addEventListener("pointercancel",cancelLogoHold);
+adminLogo.addEventListener("contextmenu",e=>e.preventDefault());
+
+function adminLogin(){
+    const password = document.getElementById("adminPassword").value;
+    const error = document.getElementById("adminError");
+
+    if(password === ADMIN_PASSWORD){
+        adminModal.style.display = "none";
+        adminDashboard.style.display = "block";
+        document.getElementById("adminPassword").value = "";
+        error.style.display = "none";
+        loadAdminInformation();
+    }else{
+        error.textContent = "Incorrect administrator password.";
+        error.style.display = "block";
+    }
+}
+
+document.getElementById("adminPassword").addEventListener("keydown",e=>{
+    if(e.key === "Enter") adminLogin();
+});
+
+function closeAdmin(){
+    adminModal.style.display = "none";
+    document.getElementById("adminPassword").value = "";
+    document.getElementById("adminError").style.display = "none";
+}
+
+function closeDashboard(){
+    adminDashboard.style.display = "none";
+}
+
+function getExamRecords(){
+    try{
+        return JSON.parse(localStorage.getItem("corvexaExamRecords")) || [];
+    }catch(error){
+        return [];
+    }
+}
+
+function loadAdminInformation(){
+    const records = getExamRecords();
+
+    document.getElementById("adminYears").textContent = 27;
+    document.getElementById("adminQuestions").textContent = "1,080";
+    document.getElementById("adminAttempts").textContent = records.length;
+
+    const average = records.length
+        ? Math.round(records.reduce((sum,r)=>sum+r.percentage,0)/records.length)
+        : 0;
+
+    document.getElementById("adminAverage").textContent = average + "%";
+
+    const table = document.getElementById("adminResults");
+    table.innerHTML = "";
+
+    if(!records.length){
+        table.innerHTML = '<tr><td colspan="4">No examination results recorded yet.</td></tr>';
+        return;
+    }
+
+    records.slice().reverse().slice(0,20).forEach(record=>{
+        const row = document.createElement("tr");
+
+        [record.year,record.score + "/40",record.percentage + "%",record.date]
+        .forEach(value=>{
+            const cell = document.createElement("td");
+            cell.textContent = value;
+            row.appendChild(cell);
+        });
+
+        table.appendChild(row);
+    });
+}
+
+
+/* CHEMISTRY QUESTION BANK */
+
+const questionBank = {};
+
+function makeYearQuestions(year){
+    const questions = [];
+
+    questions.push({
+        question:`In the ${year} laboratory exercise, an atom contains ${10 + year % 8} protons and ${11 + year % 9} neutrons. What is its mass number?`,
+        options:[
+            String((10 + year % 8) + (11 + year % 9)),
+            String((10 + year % 8) + (10 + year % 9)),
+            String((10 + year % 8) + (12 + year % 9)),
+            String((10 + year % 8) + (13 + year % 9))
+        ],
+        answer:0
+    });
+
+    questions.push({
+        question:`During the ${year} ion-formation experiment, which particle must a neutral atom lose to become a positively charged ion?`,
+        options:["Proton","Neutron","Electron","Nucleus"],
+        answer:2
+    });
+
+    questions.push({
+        question:`An element has the electron arrangement 2,8,7 in the ${year} periodic-table exercise. Which group contains the element?`,
+        options:["Group 1","Group 7","Group 2","Group 8"],
+        answer:1
+    });
+
+    questions.push({
+        question:`Across a period in the ${year} periodic-trend investigation, which property generally increases because nuclear attraction becomes stronger?`,
+        options:["Effective nuclear attraction","Atomic radius","Metallic character","Number of occupied shells"],
+        answer:0
+    });
+
+    questions.push({
+        question:`A chlorine isotope used in the ${year} calculation contains 17 protons and ${18 + year % 4} neutrons. What is its nucleon number?`,
+        options:[
+            String(35 + year % 4),
+            String(17 + year % 4),
+            String(18 + year % 4),
+            String(36 + year % 4)
+        ],
+        answer:0
+    });
+
+    questions.push({
+        question:`Which pair represents isotopes in the ${year} Chemistry exercise?`,
+        options:["¹²C and ¹⁴C","²³Na and ²⁴Mg","³⁵Cl and ³⁵S","⁴⁰Ar and ⁴⁰Ca"],
+        answer:0
+    });
+
+    questions.push({
+        question:`Why do elements belonging to the same group often show similar chemical behaviour in the ${year} periodic-table study?`,
+        options:["They have similar valence-electron arrangements","They have identical masses","They have equal densities","They have the same number of shells"],
+        answer:0
+    });
+
+    questions.push({
+        question:`Which element would most readily gain two electrons to obtain a stable outer shell in the ${year} ion-formation question?`,
+        options:["Magnesium","Oxygen","Sodium","Aluminium"],
+        answer:1
+    });
+
+    questions.push({
+        question:`Magnesium combines with oxygen in the ${year} bonding experiment. What type of bonding occurs mainly in the resulting compound?`,
+        options:["Ionic","Metallic","Hydrogen","Coordinate"],
+        answer:0
+    });
+
+    questions.push({
+        question:`A solid sodium chloride sample does not conduct electricity during the ${year} practical. What is the main reason?`,
+        options:["Its ions are fixed in the crystal lattice","It contains no charged particles","All its electrons are free","It is a liquid"],
+        answer:0
+    });
+
+    questions.push({
+        question:`Which molecule illustrates a triple covalent bond in the ${year} structure exercise?`,
+        options:["N₂","O₂","H₂","Cl₂"],
+        answer:0
+    });
+
+    questions.push({
+        question:`Which substance has a giant covalent structure in the ${year} materials investigation?`,
+        options:["Diamond","Water","Sodium chloride","Ethanol"],
+        answer:0
+    });
+
+    questions.push({
+        question:`A metal tested in the ${year} workshop conducts electricity while solid. Which explanation is most appropriate?`,
+        options:["It contains mobile electrons","It contains fixed ions","It contains hydrogen bonds","It contains only molecules"],
+        answer:0
+    });
+
+    questions.push({
+        question:`What holds oppositely charged ions together in the crystal examined in the ${year} exercise?`,
+        options:["Electrostatic attraction","Nuclear attraction","Hydrogen bonding","Magnetic attraction"],
+        answer:0
+    });
+
+    questions.push({
+        question:`Which substance was selected for the ${year} intermolecular-force investigation because its molecules can form hydrogen bonds?`,
+        options:["Ethanol","Ethane","Methane","Chloromethane"],
+        answer:0
+    });
+
+    questions.push({
+        question:`Why does graphite conduct electricity whereas diamond does not in the ${year} carbon-allotrope comparison?`,
+        options:["Graphite has delocalized electrons","Graphite contains sodium ions","Diamond is ionic","Diamond contains no carbon"],
+        answer:0
+    });
+
+    questions.push({
+        question:`Which ion is chiefly responsible for the acidic character of an aqueous solution in the ${year} acid-base experiment?`,
+        options:["H⁺","Na⁺","Cl⁻","OH⁻"],
+        answer:0
+    });
+
+    questions.push({
+        question:`A solution has pH 2 during the ${year} practical. How should it be classified?`,
+        options:["Strongly acidic","Weakly alkaline","Neutral","Strongly alkaline"],
+        answer:0
+    });
+
+    questions.push({
+        question:`Hydrochloric acid reacts completely with sodium hydroxide in the ${year} titration. Which salt is produced?`,
+        options:["Sodium chloride","Sodium carbonate","Calcium chloride","Ammonium chloride"],
+        answer:0
+    });
+
+    questions.push({
+        question:`Which indicator becomes pink in an alkaline solution during the ${year} acid-base practical?`,
+        options:["Phenolphthalein","Methyl orange","Blue litmus","Methyl red"],
+        answer:0
+    });
+
+    questions.push({
+        question:`What is the main purpose of titration in the ${year} quantitative-analysis experiment?`,
+        options:["To determine an unknown concentration","To separate isotopes","To determine density only","To produce a metal"],
+        answer:0
+    });
+
+    questions.push({
+        question:`Which substance could be used to neutralize excess hydrochloric acid during the ${year} laboratory preparation?`,
+        options:["Sodium hydroxide","Carbon dioxide","Oxygen","Copper"],
+        answer:0
+    });
+
+    questions.push({
+        question:`Which oxide is amphoteric in the ${year} classification exercise?`,
+        options:["Aluminium oxide","Sodium oxide","Sulfur dioxide","Carbon monoxide"],
+        answer:0
+    });
+
+    questions.push({
+        question:`Sulfuric acid reacts completely with potassium hydroxide in the ${year} salt-preparation experiment. What salt is formed?`,
+        options:["Potassium sulfate","Potassium sulfite","Potassium chloride","Potassium nitrate"],
+        answer:0
+    });
+
+    questions.push({
+        question:`Molten lead(II) bromide is electrolysed in the ${year} practical. What substance is deposited at the cathode?`,
+        options:["Lead","Bromine","Oxygen","Hydrogen"],
+        answer:0
+    });
+
+    questions.push({
+        question:`At which electrode does oxidation occur during electrolysis in the ${year} experiment?`,
+        options:["Anode","Cathode","Salt bridge","External resistor"],
+        answer:0
+    });
+
+    questions.push({
+        question:`Why can aqueous copper(II) sulfate conduct electricity in the ${year} conductivity test?`,
+        options:["It contains mobile ions","It contains only neutral atoms","It is a solid metal","It contains no solvent"],
+        answer:0
+    });
+
+    questions.push({
+        question:`Copper electrodes are used to electrolyse copper(II) sulfate in the ${year} experiment. What normally happens at the copper anode?`,
+        options:["Copper atoms enter the solution as ions","Copper becomes sodium","Oxygen replaces copper","Chlorine is deposited"],
+        answer:0
+    });
+
+    questions.push({
+        question:`Which change represents oxidation in the ${year} redox exercise?`,
+        options:["Loss of electrons","Gain of electrons","Gain of neutrons","Loss of protons only"],
+        answer:0
+    });
+
+    questions.push({
+        question:`During the ${year} reduction exercise, Cu²⁺ gains electrons. What species is produced?`,
+        options:["Cu","Cu²⁺","SO₄²⁻","OH⁻"],
+        answer:0
+    });
+
+    questions.push({
+        question:`What is the main function of an electrolyte in the ${year} electrolytic-cell experiment?`,
+        options:["To provide mobile charge-carrying ions","To prevent current flow","To remove all electrons","To act as an insulator"],
+        answer:0
+    });
+
+    questions.push({
+        question:`Concentrated aqueous sodium chloride is electrolysed in the ${year} industrial chemistry question. What is produced at the anode?`,
+        options:["Chlorine","Sodium","Hydrogen","Copper"],
+        answer:0
+    });
+
+    questions.push({
+        question:`Which formula represents an alkene in the ${year} hydrocarbon classification exercise?`,
+        options:["C₃H₆","C₃H₈","C₃H₄O","C₄H₁₀"],
+        answer:0
+    });
+
+    questions.push({
+        question:`An unknown hydrocarbon is tested in the ${year} laboratory. Which reagent can distinguish an alkene from an alkane?`,
+        options:["Bromine water","Sodium chloride solution","Limewater","Copper metal"],
+        answer:0
+    });
+
+    questions.push({
+        question:`Ethene reacts with steam under suitable conditions in the ${year} industrial chemistry exercise. What product is formed?`,
+        options:["Ethanol","Ethanoic acid","Ethane","Methanal"],
+        answer:0
+    });
+
+    questions.push({
+        question:`Which process converts large hydrocarbon molecules into smaller useful molecules in the ${year} petroleum-processing problem?`,
+        options:["Cracking","Neutralization","Esterification","Filtration"],
+        answer:0
+    });
+
+    questions.push({
+        question:`Powdered calcium carbonate reacts faster with acid than large lumps of the same mass in the ${year} rate experiment. Why?`,
+        options:["The powder has a larger surface area","The powder has fewer particles","The acid becomes weaker","The powder removes the catalyst"],
+        answer:0
+    });
+
+    questions.push({
+        question:`What does a catalyst do in the reaction studied during the ${year} kinetics experiment?`,
+        options:["Provides an alternative pathway with lower activation energy","Permanently raises activation energy","Becomes the main product","Stops particle collisions"],
+        answer:0
+    });
+
+    questions.push({
+        question:`Two miscible liquids have different boiling points in the ${year} laboratory experiment. Which technique is suitable for separating them?`,
+        options:["Distillation","Filtration","Decantation","Magnetic separation"],
+        answer:0
+    });
+
+    questions.push({
+        question:`For an exothermic reversible reaction considered in the ${year} equilibrium exercise, which change generally favours the products?`,
+        options:["Lowering the temperature","Raising the temperature","Removing all reactants","Adding an inert solid"],
+        answer:0
+    });
+
+    return questions;
+}
+
+
+/* GENERATE QUESTION BANK */
+
+for(let year=2000;year<=2026;year++){
+    questionBank[year]=makeYearQuestions(year);
+}
+
+
+/* YEAR SELECTOR */
+
+const yearSelect=document.getElementById("year");
+
+for(let year=2000;year<=2026;year++){
+    const option=document.createElement("option");
+    option.value=year;
+    option.textContent="Chemistry "+year;
+    yearSelect.appendChild(option);
+}
+
+
+/* EXAM VARIABLES */
+
+let currentYear=null;
+let questions=[];
+let currentQuestion=0;
+let answers=[];
+let timeLeft=2400;
+let timerInterval=null;
+let submitted=false;
+
+
+/* START EXAM */
+
+function startExam(){
+    const selected=Number(yearSelect.value);
+
+    if(!selected){
+        alert("Please select a Chemistry examination year.");
+        return;
+    }
+
+    currentYear=selected;
+
+    questions=questionBank[selected].map(q=>({
+        question:q.question,
+        options:[...q.options],
+        answer:q.answer
+    }));
+
+    answers=new Array(questions.length).fill(null);
+    currentQuestion=0;
+    timeLeft=2400;
+    submitted=false;
+
+    document.getElementById("setup").style.display="none";
+    document.getElementById("exam").style.display="block";
+    document.getElementById("result").style.display="none";
+
+    createNavigator();
+    showQuestion();
+    startTimer();
+}
+
+
+/* TIMER */
+
+function startTimer(){
+    clearInterval(timerInterval);
+    updateTimer();
+
+    timerInterval=setInterval(()=>{
+        timeLeft--;
+        updateTimer();
+
+        if(timeLeft<=0){
+            clearInterval(timerInterval);
+            submitExam();
+        }
+    },1000);
+}
+
+function updateTimer(){
+    const minutes=Math.floor(timeLeft/60);
+    const seconds=timeLeft%60;
+
+    document.getElementById("timer").textContent=
+        String(minutes).padStart(2,"0")+":"+
+        String(seconds).padStart(2,"0");
+}
+
+
+/* DISPLAY QUESTION */
+
+function showQuestion(){
+    const q=questions[currentQuestion];
+
+    document.getElementById("questionNumber").textContent=
+        "QUESTION "+(currentQuestion+1);
+
+    document.getElementById("progress").textContent=
+        (currentQuestion+1)+" / "+questions.length;
+
+    document.getElementById("questionText").textContent=q.question;
+
+    const options=document.getElementById("options");
+    options.innerHTML="";
+
+    q.options.forEach((option,index)=>{
+        const div=document.createElement("div");
+        div.className="option";
+
+        if(answers[currentQuestion]===index){
+            div.classList.add("selected");
+        }
+
+        const letter=document.createElement("strong");
+        letter.textContent=String.fromCharCode(65+index)+". ";
+
+        div.appendChild(letter);
+        div.appendChild(document.createTextNode(option));
+
+        div.onclick=()=>selectAnswer(index);
+        options.appendChild(div);
+    });
+
+    updateNavigator();
+}
+
+
+/* ANSWER SELECTION */
+
+function selectAnswer(index){
+    if(submitted)return;
+    answers[currentQuestion]=index;
+    showQuestion();
+}
+
+
+/* NEXT AND PREVIOUS */
+
+function nextQuestion(){
+    if(currentQuestion<questions.length-1){
+        currentQuestion++;
+        showQuestion();
+    }
+}
+
+function previousQuestion(){
+    if(currentQuestion>0){
+        currentQuestion--;
+        showQuestion();
+    }
+}
+
+
+/* QUESTION NAVIGATOR */
+
+function createNavigator(){
+    const box=document.getElementById("questionButtons");
+    box.innerHTML="";
+
+    questions.forEach((_,index)=>{
+        const button=document.createElement("button");
+        button.className="qbtn";
+        button.textContent=index+1;
+
+        button.onclick=()=>{
+            currentQuestion=index;
+            showQuestion();
+        };
+
+        box.appendChild(button);
+    });
+}
+
+function updateNavigator(){
+    const buttons=document.querySelectorAll(".qbtn");
+
+    buttons.forEach((button,index)=>{
+        button.classList.remove("active","answered");
+
+        if(index===currentQuestion){
+            button.classList.add("active");
+        }
+
+        if(answers[index]!==null){
+            button.classList.add("answered");
+        }
+    });
+}
+
+
+/* SUBMIT EXAM */
+
+function submitExam(){
+    if(submitted)return;
+
+    submitted=true;
+    clearInterval(timerInterval);
+
+    let score=0;
+
+    questions.forEach((q,index)=>{
+        if(answers[index]===q.answer)score++;
+    });
+
+    const percentage=Math.round(score/questions.length*100);
+
+    /* Save examination result for admin dashboard */
+
+    const records=getExamRecords();
+
+    records.push({
+        year:currentYear,
+        score:score,
+        percentage:percentage,
+        date:new Date().toLocaleString()
+    });
+
+    try{
+        localStorage.setItem("corvexaExamRecords",JSON.stringify(records));
+    }catch(error){
+        console.warn("Could not save examination record.",error);
+    }
+
+    document.getElementById("exam").style.display="none";
+    document.getElementById("result").style.display="block";
+
+    document.getElementById("resultTitle").textContent=
+        "Chemistry CBT — "+currentYear;
+
+    document.getElementById("score").textContent=
+        score+" / "+questions.length;
+
+    document.getElementById("resultMessage").textContent=
+        "Your score is "+percentage+"%.";
+
+    showReview();
+}
+
+
+/* ANSWER REVIEW */
+
+function showReview(){
+    const review=document.getElementById("review");
+    review.innerHTML="";
+
+    questions.forEach((q,index)=>{
+        const item=document.createElement("div");
+        item.className="review-item";
+
+        const userAnswer=answers[index]===null
+            ?"Not answered"
+            :q.options[answers[index]];
+
+        const correctAnswer=q.options[q.answer];
+
+        const isCorrect=answers[index]===q.answer;
+
+        const title=document.createElement("strong");
+        title.textContent="Question "+(index+1);
+
+        const question=document.createElement("p");
+        question.textContent=q.question;
+
+        const yourAnswer=document.createElement("p");
+        yourAnswer.textContent="Your answer: "+userAnswer;
+
+        const correct=document.createElement("p");
+        correct.textContent="Correct answer: "+correctAnswer;
+
+        const status=document.createElement("p");
+        status.textContent=isCorrect?"Correct":"Incorrect";
+        status.className=isCorrect?"correct":"wrong";
+
+        item.append(title,question,yourAnswer,correct,status);
+        review.appendChild(item);
+    });
+}
+
+
+/* KEYBOARD CONTROLS */
+
+document.addEventListener("keydown",function(event){
+    if(document.getElementById("exam").style.display!=="block"){
+        return;
+    }
+
+    if(event.key==="ArrowRight")nextQuestion();
+    if(event.key==="ArrowLeft")previousQuestion();
+
+    if(["1","2","3","4"].includes(event.key)){
+        selectAnswer(Number(event.key)-1);
+    }
+});
+
+</script>
+
+</body>
+</html>
